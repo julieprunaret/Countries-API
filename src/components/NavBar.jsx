@@ -12,7 +12,7 @@ const Navbar = () => {
   return (
     <div>
       <Flex as="nav" p="10px" alignItems="center">
-        <Heading as="h1">Dojo Tasks</Heading>
+        <Heading as="h1">Plants</Heading>
         <Spacer />
 
         <HStack spacing="20px">

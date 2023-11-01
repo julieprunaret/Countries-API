@@ -1,58 +1,71 @@
-import { Box, Container, Heading, SimpleGrid, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Divider,
+  Heading,
+  Icon,
+  Image,
+  SimpleGrid,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
+import { CircularProgress } from '@chakra-ui/react';
+import useFetch from '../utils/Hooks/useFetch';
+import { Card, CardBody, CardFooter } from '@chakra-ui/react';
+import { SunIcon } from '@chakra-ui/icons';
 
 function Dashboard() {
-  // const boxStyles = {
-  //   p: '10px',
-  //   bg: 'purple.400',
-  //   color: 'white',
-  //   m: '10px',
-  //   textAlign: 'center',
-  //   filter: 'blur(1px)',
-  //   ':hover': {
-  //     color: 'black',
-  //     bg: 'blue.200',
-  //     cursor: 'pointer',
-  //   },
-  // };
+  const { data, isLoading, error } = useFetch(
+    `https://perenual.com/api/species-list?key=`
+  );
+
+  if (error) {
+    return <div>Error occurred while fetching data.</div>;
+  }
+
   return (
     <SimpleGrid columns={4} spacing={10} minChildWidth="250px">
-      <Box bg="white" height="200px" border="1px solid">
-        <Text color={{ base: 'pink', md: 'blue' }}>Hello</Text>
-      </Box>
-      <Box bg="white" height="200px" border="1px solid"></Box>
-      <Box bg="white" height="200px" border="1px solid"></Box>
-      <Box bg="white" height="200px" border="1px solid"></Box>
-
-      <Box bg="white" height="200px" border="1px solid"></Box>
-      <Box bg="white" height="200px" border="1px solid"></Box>
-      <Box bg="white" height="200px" border="1px solid"></Box>
-      <Box bg="white" height="200px" border="1px solid"></Box>
-
-      <Box bg="white" height="200px" border="1px solid"></Box>
-      <Box bg="white" height="200px" border="1px solid"></Box>
-      <Box bg="white" height="200px" border="1px solid"></Box>
-      <Box bg="white" height="200px" border="1px solid"></Box>
+      {isLoading ? (
+        <CircularProgress isIndeterminate color="purple" />
+      ) : (
+        data.data &&
+        data.data.map(plant => (
+          <Card maxW="sm" key={plant.id}>
+            <CardBody>
+              <Image
+                src={
+                  plant.default_image
+                    ? plant.default_image.medium_url
+                    : 'https://perenual.com/storage/species_image/4_abies_concolor_candicans/medium/49283844888_332c9e46f2_b.jpg'
+                }
+                alt={plant.common_name}
+                borderRadius="lg"
+              />
+              <Stack mt="6" spacing="3">
+                <Heading size="md">{plant.common_name}</Heading>
+                <Text>
+                  <Icon as={SunIcon} color="#3c5251" />:{' '}
+                  {plant.sunlight[0].charAt(0).toUpperCase() +
+                    plant.sunlight[0].slice(1)}
+                </Text>
+              </Stack>
+            </CardBody>
+            <Divider />
+            <CardFooter>
+              <ButtonGroup spacing="2">
+                <Button variant="solid" colorScheme="purple">
+                  Buy now
+                </Button>
+                <Button variant="ghost" colorScheme="purple">
+                  Add to cart
+                </Button>
+              </ButtonGroup>
+            </CardFooter>
+          </Card>
+        ))
+      )}
     </SimpleGrid>
-    // <Container as="section" maxW="4xl" py="20px">
-    //   <Heading my="30px" p="10px">
-    //     hey
-    //   </Heading>
-    //   <Text ml="30px">
-    //     Aenean vel lectus dapibus, varius nisi in, commodo dui. Cras vestibulum
-    //     pretium augue, in congue arcu. Vivamus sed commodo sem, id porttitor
-    //     felis.
-    //   </Text>
-    //   <Text ml="30px" color="blue.300" fontWeight="bold">
-    //     Aenean vel lectus dapibus, varius nisi in, commodo dui. Cras vestibulum
-    //     pretium augue, in congue arcu. Vivamus sed commodo sem, id porttitor
-    //     felis.
-    //   </Text>
-    //   <Box my="30px" p="20px" bg="salmon">
-    //     <Text color="white">This is box</Text>
-    //   </Box>
-
-    //   <Box sx={boxStyles}>hello</Box>
-    // </Container>
   );
 }
 
